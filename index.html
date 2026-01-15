@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#121212">
+    <title>AI to VCF</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📇</text></svg>">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #121212; color: #e0e0e0; padding: 20px; display: flex; flex-direction: column; align-items: center; height: 100vh; box-sizing: border-box; }
+        h3 { margin-bottom: 15px; color: #ffffff; }
+        textarea { width: 100%; flex-grow: 1; background: #1e1e1e; color: #00ff88; border: 1px solid #333; padding: 15px; border-radius: 12px; font-family: monospace; font-size: 14px; resize: none; outline: none; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); }
+        button { margin-top: 20px; padding: 18px; background: linear-gradient(135deg, #007bff, #0056b3); color: white; border: none; border-radius: 16px; font-size: 18px; font-weight: bold; width: 100%; cursor: pointer; box-shadow: 0 4px 15px rgba(0,123,255,0.3); transition: transform 0.1s; }
+        button:active { transform: scale(0.98); }
+        .instructions { font-size: 12px; color: #888; margin-bottom: 10px; text-align: center; }
+    </style>
+</head>
+<body>
+    <h3>AI Contact Converter</h3>
+    <p class="instructions">Cole o bloco BEGIN:VCARD gerado pelo Gemini abaixo:</p>
+    <textarea id="vcardInput" placeholder="BEGIN:VCARD&#10;VERSION:3.0&#10;FN:Nome..."></textarea>
+    <button onclick="gerarVcard()">SALVAR NA AGENDA</button>
+
+    <script>
+        function gerarVcard() {
+            const texto = document.getElementById('vcardInput').value;
+            if (!texto.includes("BEGIN:VCARD")) {
+                alert("⚠️ Erro: Cole um código vCard válido!");
+                return;
+            }
+            let nomeArquivo = "novo_contato";
+            const match = texto.match(/FN:(.*)/);
+            if (match && match[1]) nomeArquivo = match[1].trim();
+
+            const blob = new Blob([texto], { type: "text/vcard" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `${nomeArquivo}.vcf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
